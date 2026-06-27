@@ -1,0 +1,218 @@
+/*==================================================
+    AFRICODE CHURCH ERP
+    LAYOUT.CSS
+==================================================*/
+
+/*==========================================
+    GLOBAL RESET
+==========================================*/
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/*==========================================
+    HTML
+==========================================*/
+
+html{
+    scroll-behavior:smooth;
+}
+
+/*==========================================
+    BODY
+==========================================*/
+
+body{
+
+    font-family:var(--font-family);
+
+    font-size:var(--font-md);
+
+    line-height:var(--line-height);
+
+    background:var(--color-background);
+
+    color:var(--color-text);
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+}
+
+
+/*==========================================
+    LINKS
+==========================================*/
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+
+/*==========================================
+    LISTS
+==========================================*/
+
+ul,
+ol{
+
+    list-style:none;
+
+}
+
+
+/*==========================================
+    IMAGES
+==========================================*/
+
+img{
+
+    max-width:100%;
+
+    display:block;
+
+}
+
+
+/*==========================================
+    BUTTONS
+==========================================*/
+
+button{
+
+    font:inherit;
+
+    cursor:pointer;
+
+    border:none;
+
+    background:none;
+
+}
+
+
+/*==========================================
+    INPUTS
+==========================================*/
+
+input,
+select,
+textarea{
+
+    font:inherit;
+
+}
+
+
+/*==========================================
+    APP WRAPPER
+==========================================*/
+
+.app{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+/*==========================================
+    MAIN CONTENT
+==========================================*/
+
+.main{
+
+    flex:1;
+
+    margin-left:var(--sidebar-width);
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:100vh;
+
+    transition:margin-left var(--transition-normal);
+
+}
+
+
+/*==========================================
+    NAVBAR
+==========================================*/
+
+.navbar{
+
+    height:var(--navbar-height);
+
+    background:var(--navbar-bg);
+
+    border-bottom:1px solid var(--color-border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 var(--space-xl);
+
+    position:sticky;
+
+    top:0;
+
+    z-index:var(--z-navbar);
+
+}
+
+
+/*==========================================
+    PAGE CONTENT
+==========================================*/
+
+.content{
+
+    flex:1;
+
+    padding:var(--space-xl);
+
+}
+
+
+/*==========================================
+    FOOTER
+==========================================*/
+
+.footer{
+
+    padding:var(--space-lg);
+
+    border-top:1px solid var(--color-border);
+
+    background:var(--color-surface);
+
+}
+
+
+/*==========================================
+    CONTAINER
+==========================================*/
+
+.container{
+
+    width:min(100%, var(--container-width));
+
+    margin:auto;
+
+}
