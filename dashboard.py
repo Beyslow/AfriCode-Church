@@ -2,10 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from sqlalchemy import func
 from datetime import date, timedelta
-from models import (
-    db, Church, ChurchUser, Member, Visitor, Ministry,
-    ChurchService, AttendanceRecord, ChurchIncome,
-    ChurchExpense, Announcement
+from models import (db, Church, ChurchUser, Member, Visitor, Ministry, ChurchService, AttendanceRecord, ChurchIncome, ChurchExpense, Announcement
 )
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")

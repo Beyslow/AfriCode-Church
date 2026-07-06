@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Report{% endblock %}
+{% block topbar_title %}Weekly Report{% endblock %}
+
+{% block content %}
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      This Week's Attendance
+    </span>
+    <span class="badge badge-primary">{{ week_start.strftime('%d %b') }} – {{ week_end.strftime('%d %b %Y') }}</span>
+  </div>
+
+  {% if report %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Present</th>
+          <th>Absent</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report %}
+        <tr>
+          <td class="td-name">{{ row.service.name }}</td>
+          <td class="td-muted">{{ row.service.service_date.strftime('%A, %d %b') }}</td>
+          <td><span class="badge badge-success">{{ row.present }}</span></td>
+          <td><span class="badge badge-danger">{{ row.absent }}</span></td>
+          <td class="td-muted">{{ row.total }}</td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('attendance.service_detail', service_id=row.service.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <span class="form-hint">
+      {{ report|sum(attribute='present') }} total present across {{ report|length }} service{{ 's' if report|length != 1 }} this week
+    </span>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No services this week</div>
+    <p class="empty-state-text">Once a service is created for this week, it'll show up here.</p>
+    <a href="{{ url_for('attendance.create_service') }}" class="btn btn-primary btn-sm">New Service</a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,14 +1,19 @@
-/*==================================================
-    AFRICODE CHURCH ERP
-    MASTER STYLESHEET
-==================================================*/
+/* ============================================================
+   AfriCode Church ERP — Master Stylesheet
+   ============================================================ */
 
 @import url('variables.css');
-@import url('layout.css');
-@import url('components.css');
+@import url('reset.css');
+@import url('base.css');
+@import url('buttons.css');
+@import url('cards.css');
 @import url('forms.css');
 @import url('tables.css');
+@import url('badges.css');
+@import url('alerts.css');
+@import url('avatars.css');
+@import url('layouts.css');
 @import url('dashboard.css');
-@import url('modules.css');
-@import url('utilities.css');
+@import url('auth.css');
+@import url('usher.css');
 @import url('responsive.css');

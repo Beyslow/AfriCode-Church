@@ -1,0 +1,88 @@
+/* ── Usher view ──────────────────────────────────────────────── */
+.usher-page {
+  background: var(--color-surface);
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.usher-header {
+  background: var(--sidebar-bg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.usher-header-brand { display: flex; flex-direction: column; }
+.usher-header-title { font-size: var(--text-base); font-weight: var(--weight-bold); color: white; }
+.usher-header-sub   { font-size: var(--text-xs); color: var(--sidebar-text-muted); }
+
+.usher-content { padding: var(--space-4); max-width: 600px; margin: 0 auto; }
+
+.usher-service-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+  overflow: hidden;
+}
+
+.usher-service-info {
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-primary-light);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.usher-service-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--color-text); }
+.usher-service-date { font-size: var(--text-sm); color: var(--color-text-muted); margin-top: 2px; }
+.usher-count        { font-size: var(--text-xs); color: var(--color-primary); font-weight: var(--weight-semi); margin-top: var(--space-1); }
+
+.usher-member-list { list-style: none; }
+
+.usher-member-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background var(--transition);
+  user-select: none;
+}
+
+.usher-member-item:last-child { border-bottom: none; }
+.usher-member-item:active { background: var(--color-primary-light); }
+
+.usher-member-name   { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text); flex: 1; }
+.usher-member-phone  { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+.usher-check {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.usher-check svg { width: 16px; height: 16px; color: transparent; }
+
+.usher-member-item.present .usher-check {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.usher-member-item.present .usher-check svg { color: white; }
+.usher-member-item.present .usher-member-name { color: var(--color-success); }
+
+.usher-add-visitor {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}

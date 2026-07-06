@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+{% block topbar_title %}Reports{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid stat-grid-3">
+
+  <a href="{{ url_for('reports.membership_report') }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-primary" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">Membership Growth</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">Track new members, gender and marital breakdowns, and birthdays.</p>
+  </a>
+
+  <a href="{{ url_for('reports.attendance_report') }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-accent" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 11 12 14 22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">Attendance Trends</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">Sunday attendance trends, averages, and best-attended services.</p>
+  </a>
+
+  <a href="{{ url_for('reports.giving_report') }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-success" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">Giving Trends</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">Monthly income and expenses over the last 12 months, by category.</p>
+  </a>
+
+  <a href="{{ url_for('reports.visitor_report') }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-warning" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">Visitor Conversion</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">Conversion rate, monthly registrations, and follow-up coverage.</p>
+  </a>
+
+  <a href="{{ url_for('reports.ministry_report') }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-danger" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">Ministry Health</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">Leadership coverage and member counts across all ministries.</p>
+  </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}SMS Log{% endblock %}
+{% block topbar_title %}SMS Log{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('communications.compose') }}" class="btn btn-primary btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+  </svg>
+  Send SMS
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+  <form method="get" action="{{ url_for('communications.sms_log') }}" class="filter-bar">
+    <select name="status" class="form-control" onchange="this.form.submit()">
+      <option value="" {% if not f_status %}selected{% endif %}>All Statuses</option>
+      <option value="sent"    {% if f_status == 'sent' %}selected{% endif %}>Sent</option>
+      <option value="pending" {% if f_status == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="failed"  {% if f_status == 'failed' %}selected{% endif %}>Failed</option>
+    </select>
+    {% if f_status %}
+    <a href="{{ url_for('communications.sms_log') }}" class="btn btn-ghost btn-sm">Clear</a>
+    {% endif %}
+  </form>
+
+  <div class="card-header">
+    <span class="card-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      Message History
+    </span>
+  </div>
+
+  {% if logs %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Recipient</th>
+          <th>Phone</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Sent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td class="td-name">{{ log.recipient_name or 'Unknown' }}</td>
+          <td class="td-muted">{{ log.phone }}</td>
+          <td class="td-muted">{{ log.message[:60] }}{% if log.message|length > 60 %}…{% endif %}</td>
+          <td>
+            {% if log.status == 'sent' %}
+              <span class="badge badge-success">Sent</span>
+            {% elif log.status == 'pending' %}
+              <span class="badge badge-warning">Pending</span>
+            {% else %}
+              <span class="badge badge-danger">Failed</span>
+            {% endif %}
+          </td>
+          <td class="td-muted">{{ log.sent_at.strftime('%d %b %Y, %H:%M') if log.sent_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span class="pagination-info">
+      Showing {{ pagination.items|length }} of {{ pagination.total }} message{{ 's' if pagination.total != 1 }}
+    </span>
+    <div class="pagination-pages">
+      <a href="{{ url_for('communications.sms_log', page=pagination.prev_num, status=f_status) if pagination.has_prev else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_prev }}">‹</a>
+
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <a href="{{ url_for('communications.sms_log', page=p, status=f_status) }}"
+             class="page-link {{ 'active' if p == pagination.page }}">{{ p }}</a>
+        {% else %}
+          <span class="page-link disabled">…</span>
+        {% endif %}
+      {% endfor %}
+
+      <a href="{{ url_for('communications.sms_log', page=pagination.next_num, status=f_status) if pagination.has_next else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_next }}">›</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">
+      {% if f_status %}No {{ f_status }} messages{% else %}No messages sent yet{% endif %}
+    </div>
+    <p class="empty-state-text">
+      {% if f_status %}Try a different status filter.{% else %}Send your first SMS from the compose page.{% endif %}
+    </p>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Birthdays{% endblock %}
+{% block topbar_title %}Birthdays{% endblock %}
+
+{% block content %}
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      Upcoming Birthdays
+    </span>
+  </div>
+
+  {% if members %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Date of Birth</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in members %}
+        {% set bday_this_year = member.date_of_birth.replace(year=today.year) %}
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:var(--space-3);">
+              <div class="avatar avatar-sm">{{ member.full_name[0].upper() }}</div>
+              <span class="td-name">{{ member.full_name }}</span>
+              {% if bday_this_year == today %}
+              <span class="badge badge-accent">Today 🎉</span>
+              {% elif bday_this_year >= today and (bday_this_year - today).days <= 7 %}
+              <span class="badge badge-warning">This week</span>
+              {% endif %}
+            </div>
+          </td>
+          <td class="td-muted">{{ member.phone or '—' }}</td>
+          <td class="td-muted">{{ member.date_of_birth.strftime('%d %B') }}</td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('members.member_profile', member_id=member.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No birthdays on record</div>
+    <p class="empty-state-text">Add dates of birth to member profiles to see them listed here.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

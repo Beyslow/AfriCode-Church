@@ -1,0 +1,43 @@
+.absentee-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.absentee-row:last-child { border-bottom: none; }
+
+.absentee-info { display: flex; align-items: center; gap: var(--space-3); }
+
+.member-name  { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text); }
+.member-phone { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+.birthday-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.birthday-row:last-child { border-bottom: none; }
+
+.birthday-info { flex: 1; }
+.birthday-emoji { font-size: 1.25rem; }
+
+.announcement-item {
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
+  margin-bottom: var(--space-3);
+}
+
+.announcement-item:last-child { margin-bottom: 0; }
+
+.announcement-title { font-size: var(--text-sm); font-weight: var(--weight-semi); color: var(--color-text); margin-bottom: var(--space-1); }
+.announcement-body  { font-size: var(--text-xs); color: var(--color-text-muted); }
+.announcement-date  { font-size: var(--text-xs); color: var(--color-primary); margin-top: var(--space-2); }
+
+.quick-action-list { display: flex; flex-direction: column; gap: var(--space-2); }

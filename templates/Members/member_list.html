@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Members{% endblock %}
+{% block topbar_title %}Members{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('members.export_csv') }}" class="btn btn-ghost btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Export
+</a>
+<a href="{{ url_for('members.import_csv') }}" class="btn btn-outline btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+  </svg>
+  Import
+</a>
+<a href="{{ url_for('members.add_member') }}" class="btn btn-primary btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+  Add Member
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+  <form method="get" action="{{ url_for('members.member_list') }}" class="filter-bar">
+    <div class="input-icon-wrap" style="flex:1; min-width:200px;">
+      <span class="icon-left">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input type="text" name="q" class="form-control" placeholder="Search by name or phone…" value="{{ search }}">
+    </div>
+
+    <select name="status" class="form-control" onchange="this.form.submit()">
+      <option value="" {% if not status %}selected{% endif %}>All Statuses</option>
+      <option value="Active" {% if status == 'Active' %}selected{% endif %}>Active</option>
+      <option value="Inactive" {% if status == 'Inactive' %}selected{% endif %}>Inactive</option>
+    </select>
+
+    <select name="gender" class="form-control" onchange="this.form.submit()">
+      <option value="" {% if not gender %}selected{% endif %}>All Genders</option>
+      <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+      <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+    </select>
+
+    <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+    {% if search or status or gender %}
+    <a href="{{ url_for('members.member_list') }}" class="btn btn-ghost btn-sm">Clear</a>
+    {% endif %}
+  </form>
+
+  {% if members %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Gender</th>
+          <th>Status</th>
+          <th>Join Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in members %}
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:var(--space-3);">
+              <div class="avatar avatar-sm">{{ member.full_name[0].upper() }}</div>
+              <span class="td-name">{{ member.full_name }}</span>
+            </div>
+          </td>
+          <td class="td-muted">{{ member.phone or '—' }}</td>
+          <td class="td-muted">{{ member.gender or '—' }}</td>
+          <td>
+            {% if member.status == 'Active' %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-gray">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="td-muted">{{ member.join_date.strftime('%d %b %Y') if member.join_date else '—' }}</td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('members.member_profile', member_id=member.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span class="pagination-info">
+      Showing {{ pagination.items|length }} of {{ pagination.total }} member{{ 's' if pagination.total != 1 }}
+    </span>
+    <div class="pagination-pages">
+      <a href="{{ url_for('members.member_list', page=pagination.prev_num, q=search, status=status, gender=gender) if pagination.has_prev else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_prev }}">‹</a>
+
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <a href="{{ url_for('members.member_list', page=p, q=search, status=status, gender=gender) }}"
+             class="page-link {{ 'active' if p == pagination.page }}">{{ p }}</a>
+        {% else %}
+          <span class="page-link disabled">…</span>
+        {% endif %}
+      {% endfor %}
+
+      <a href="{{ url_for('members.member_list', page=pagination.next_num, q=search, status=status, gender=gender) if pagination.has_next else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_next }}">›</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">
+      {% if search or status or gender %}No members match your filters{% else %}No members yet{% endif %}
+    </div>
+    <p class="empty-state-text">
+      {% if search or status or gender %}
+        Try adjusting your search or clearing the filters.
+      {% else %}
+        Add your first member to start building your church roster.
+      {% endif %}
+    </p>
+    {% if not (search or status or gender) %}
+    <a href="{{ url_for('members.add_member') }}" class="btn btn-primary btn-sm">Add Member</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

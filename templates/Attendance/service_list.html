@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Services{% endblock %}
+{% block topbar_title %}Services{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('attendance.create_service') }}" class="btn btn-primary btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+  New Service
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+  <form method="get" action="{{ url_for('attendance.service_list') }}" class="filter-bar">
+    <select name="type" class="form-control" onchange="this.form.submit()">
+      <option value="" {% if not service_type %}selected{% endif %}>All Types</option>
+      <option value="Sunday"    {% if service_type == 'Sunday' %}selected{% endif %}>Sunday</option>
+      <option value="Midweek"   {% if service_type == 'Midweek' %}selected{% endif %}>Midweek</option>
+      <option value="Special"   {% if service_type == 'Special' %}selected{% endif %}>Special</option>
+    </select>
+
+    <input type="month" name="month" class="form-control" value="{{ month }}" onchange="this.form.submit()">
+
+    {% if service_type or month %}
+    <a href="{{ url_for('attendance.service_list') }}" class="btn btn-ghost btn-sm">Clear</a>
+    {% endif %}
+  </form>
+
+  {% if service_data %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Present</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in service_data %}
+        <tr>
+          <td class="td-name">{{ row.service.name }}</td>
+          <td><span class="badge badge-primary">{{ row.service.service_type }}</span></td>
+          <td class="td-muted">{{ row.service.service_date.strftime('%d %b %Y') }}</td>
+          <td>{{ row.count }}</td>
+          <td style="text-align:right; display:flex; gap:var(--space-3); justify-content:flex-end;">
+            <a href="{{ url_for('attendance.mark_attendance', service_id=row.service.id) }}" class="td-link">Mark</a>
+            <a href="{{ url_for('attendance.service_detail', service_id=row.service.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span class="pagination-info">
+      Showing {{ pagination.items|length }} of {{ pagination.total }} service{{ 's' if pagination.total != 1 }}
+    </span>
+    <div class="pagination-pages">
+      <a href="{{ url_for('attendance.service_list', page=pagination.prev_num, type=service_type, month=month) if pagination.has_prev else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_prev }}">‹</a>
+
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <a href="{{ url_for('attendance.service_list', page=p, type=service_type, month=month) }}"
+             class="page-link {{ 'active' if p == pagination.page }}">{{ p }}</a>
+        {% else %}
+          <span class="page-link disabled">…</span>
+        {% endif %}
+      {% endfor %}
+
+      <a href="{{ url_for('attendance.service_list', page=pagination.next_num, type=service_type, month=month) if pagination.has_next else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_next }}">›</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">
+      {% if service_type or month %}No services match your filters{% else %}No services yet{% endif %}
+    </div>
+    <p class="empty-state-text">
+      {% if service_type or month %}
+        Try adjusting your filters or clearing them.
+      {% else %}
+        Create your first service to start tracking attendance.
+      {% endif %}
+    </p>
+    {% if not (service_type or month) %}
+    <a href="{{ url_for('attendance.create_service') }}" class="btn btn-primary btn-sm">New Service</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

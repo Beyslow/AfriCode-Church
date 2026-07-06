@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Ministry Health{% endblock %}
+{% block topbar_title %}Ministry Health{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid stat-grid-3">
+
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Ministries</span>
+      <div class="stat-card-icon stat-card-icon-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_ministries }}</div>
+    <div class="stat-card-sub">Active in the church</div>
+  </div>
+
+  <div class="stat-card stat-card-success">
+    <div class="stat-card-header">
+      <span class="stat-card-label">With Leadership</span>
+      <div class="stat-card-icon stat-card-icon-success">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ ministries_with_leader }}</div>
+    <div class="stat-card-sub">Of {{ total_ministries }} total</div>
+  </div>
+
+  <div class="stat-card stat-card-accent">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Largest Ministry</span>
+      <div class="stat-card-icon stat-card-icon-accent">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value" style="font-size:var(--text-lg);">{{ largest_ministry.ministry.name if largest_ministry else '—' }}</div>
+    <div class="stat-card-sub">{{ largest_ministry.member_count if largest_ministry else 0 }} members</div>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      All Ministries
+    </span>
+  </div>
+
+  {% if ministry_health %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr><th>Ministry</th><th>Leader</th><th>Members</th><th>Health</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for row in ministry_health %}
+        <tr>
+          <td class="td-name">{{ row.ministry.name }}</td>
+          <td class="td-muted">{{ row.leader.full_name if row.leader else 'Unassigned' }}</td>
+          <td>{{ row.member_count }}</td>
+          <td>
+            {% if row.health == 'Good' %}
+              <span class="badge badge-success">Good</span>
+            {% elif row.health == 'Growing' %}
+              <span class="badge badge-primary">Growing</span>
+            {% else %}
+              <span class="badge badge-warning">Needs Attention</span>
+            {% endif %}
+          </td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('ministries.ministry_detail', ministry_id=row.ministry.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No ministries yet</div>
+    <p class="empty-state-text">Create your first ministry to start tracking leadership and membership.</p>
+    <a href="{{ url_for('ministries.add_ministry') }}" class="btn btn-primary btn-sm">New Ministry</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

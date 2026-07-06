@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Platform Overview{% endblock %}
+{% block topbar_title %}Platform Overview{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid">
+
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Churches</span>
+      <div class="stat-card-icon stat-card-icon-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 2H6l6 8-6 8h12l-6-8z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_churches }}</div>
+    <div class="stat-card-sub">Across the platform</div>
+  </div>
+
+  <div class="stat-card stat-card-success">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Active Churches</span>
+      <div class="stat-card-icon stat-card-icon-success">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ active_churches }}</div>
+    <div class="stat-card-sub">{{ total_churches - active_churches }} inactive</div>
+  </div>
+
+  <div class="stat-card stat-card-accent">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Members</span>
+      <div class="stat-card-icon stat-card-icon-accent">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_members }}</div>
+    <div class="stat-card-sub">Platform-wide</div>
+  </div>
+
+  <div class="stat-card stat-card-warning">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Users</span>
+      <div class="stat-card-icon stat-card-icon-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_users }}</div>
+    <div class="stat-card-sub">Excludes super admins</div>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Churches
+    </span>
+  </div>
+
+  {% if church_stats %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Church</th>
+          <th>Pastor</th>
+          <th>Members</th>
+          <th>Status</th>
+          <th>Onboarded</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in church_stats %}
+        <tr>
+          <td class="td-name">{{ row.church.name }}</td>
+          <td class="td-muted">{{ row.pastor.username if row.pastor else 'Unassigned' }}</td>
+          <td>{{ row.member_count }}</td>
+          <td>
+            {% if row.church.is_active %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-danger">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="td-muted">{{ row.church.created_at.strftime('%d %b %Y') if row.church.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 2H6l6 8-6 8h12l-6-8z"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No churches yet</div>
+    <p class="empty-state-text">Once churches are onboarded to the platform, they'll show up here.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

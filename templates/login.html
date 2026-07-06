@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — AfriCode Church ERP</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  
+</head>
+<body class="login-body">
+
+  <!-- Left brand panel -->
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-brand-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 2H6l6 8-6 8h12l-6-8z"/>
+        </svg>
+      </div>
+      <div class="login-brand-text">
+        <span class="login-brand-name">AfriCode</span>
+        <span class="login-brand-sub">Church ERP</span>
+      </div>
+    </div>
+
+    <div class="login-hero">
+      <div class="login-hero-eyebrow">Church Management</div>
+      <h1 class="login-hero-title">
+        Built for<br><span>African</span><br>churches
+      </h1>
+      <p class="login-hero-desc">
+        Manage your congregation, track attendance, record offerings, and communicate with your members — all in one place.
+      </p>
+    </div>
+
+    <div class="login-features">
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Members, visitors &amp; follow-ups
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Attendance &amp; ministry management
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        Tithes, offerings &amp; expense tracking
+      </div>
+      <div class="login-feature">
+        <span class="login-feature-dot"></span>
+        SMS announcements via Orange API
+      </div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="login-right">
+    <div class="login-form-wrap">
+
+      <div class="login-form-header">
+        <h2 class="login-form-title">Welcome back</h2>
+        <p class="login-form-subtitle">Sign in to your church dashboard</p>
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+          <div class="login-flash login-flash-{{ 'error' if category in ['danger', 'error'] else category }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {{ message }}
+          </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+
+        <!-- Church Code (not shown for super admin) -->
+        <div class="form-group" id="churchCodeGroup">
+          <label class="form-label" for="church_code">Church Code</label>
+          <input
+            type="text"
+            id="church_code"
+            name="church_code"
+            class="form-control"
+            placeholder="e.g. grace-chapel"
+            value="{{ request.form.get('church_code', '') }}"
+            autocomplete="organization"
+          />
+          <div class="form-hint">Leave blank to sign in as platform admin</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control"
+            placeholder="Your username"
+            value="{{ request.form.get('username', '') }}"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-login">Sign in</button>
+      </form>
+
+      <div class="login-form-footer">
+        Forgot your credentials? Contact your <strong>church administrator</strong><br>or the AfriCode support team.
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

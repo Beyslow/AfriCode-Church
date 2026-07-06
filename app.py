@@ -318,4 +318,61 @@ def seed_db():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
+        # ── Auto-seed if database is empty ────────────────────────────────────
+        from models import IncomeCategory, ExpenseCategory
+
+        if not ChurchUser.query.filter_by(role="super_admin").first():
+
+            # Super admin
+            db.session.add(ChurchUser(
+                username                = "superadmin",
+                password                = generate_password_hash("super123"),
+                role                    = "super_admin",
+                church_id               = None,
+                must_change_credentials = False,
+            ))
+            db.session.flush()
+
+            # Demo church
+            church = Church(
+                church_code       = "grace-chapel-demo",
+                name              = "Grace Chapel Demo",
+                email             = "admin@gracechapel.com",
+                phone             = "+231770000000",
+                pastor_name       = "Pastor Demo",
+                is_active         = True,
+                subscription_plan = "trial",
+                base_currency     = "USD",
+                local_currency    = "LRD",
+                exchange_rate     = 196.0,
+            )
+            db.session.add(church)
+            db.session.flush()
+
+            # Staff accounts
+            for username, role, password in [
+                ("pastor",    "pastor",    "pastor123"),
+                ("treasurer", "treasurer", "treasurer123"),
+                ("secretary", "secretary", "secretary123"),
+                ("usher",     "usher",     "usher123"),
+            ]:
+                db.session.add(ChurchUser(
+                    username                = username,
+                    password                = generate_password_hash(password),
+                    role                    = role,
+                    church_id               = church.id,
+                    must_change_credentials = False,
+                ))
+
+            # Default categories
+            for name in ["Tithes", "Offerings", "Donations", "Building Fund", "Project Fund"]:
+                db.session.add(IncomeCategory(church_id=church.id, name=name, is_active=True))
+
+            for name in ["Utilities", "Fuel", "Maintenance", "Salaries", "Miscellaneous"]:
+                db.session.add(ExpenseCategory(church_id=church.id, name=name, is_active=True))
+
+            db.session.commit()
+            print("✅ Database seeded — superadmin / super123")
+
     app.run(debug=True)

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Visitor Conversion{% endblock %}
+{% block topbar_title %}Visitor Conversion{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid">
+
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Total Visitors</span>
+      <div class="stat-card-icon stat-card-icon-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_visitors }}</div>
+    <div class="stat-card-sub">All time</div>
+  </div>
+
+  <div class="stat-card stat-card-success">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Converted</span>
+      <div class="stat-card-icon stat-card-icon-success">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_converted }}</div>
+    <div class="stat-card-sub">Became members</div>
+  </div>
+
+  <div class="stat-card stat-card-warning">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Pending</span>
+      <div class="stat-card-icon stat-card-icon-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ total_pending }}</div>
+    <div class="stat-card-sub">Not yet converted</div>
+  </div>
+
+  <div class="stat-card stat-card-accent">
+    <div class="stat-card-header">
+      <span class="stat-card-label">Conversion Rate</span>
+      <div class="stat-card-icon stat-card-icon-accent">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card-value">{{ conversion_rate }}%</div>
+    <div class="stat-card-sub">Overall</div>
+  </div>
+
+</div>
+
+<div class="content-grid content-grid-wide">
+
+  <div class="col-stack">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          Monthly Registrations — Last 6 Months
+        </span>
+      </div>
+      <div class="table-wrap-flush">
+        <table>
+          <thead><tr><th>Month</th><th>New Visitors</th></tr></thead>
+          <tbody>
+            {% for m in monthly_visitors %}
+            <tr>
+              <td class="td-name">{{ m.label }}</td>
+              <td>{{ m.count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Visitors With No Follow-Up
+          <span class="badge badge-warning">{{ no_followup|length }}</span>
+        </span>
+      </div>
+      <div class="card-body-sm">
+        {% if no_followup %}
+          {% for v in no_followup %}
+          <div class="absentee-row">
+            <div class="absentee-info">
+              <div class="avatar avatar-sm">{{ v.full_name[0].upper() }}</div>
+              <div>
+                <div class="member-name">{{ v.full_name }}</div>
+                <div class="member-phone">{{ v.phone or 'No phone' }} · Visited {{ v.visit_date.strftime('%d %b %Y') }}</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="empty-state">
+          <p class="empty-state-text">Every pending visitor has been followed up with</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-stack">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Follow-Up Methods
+        </span>
+      </div>
+      <div class="card-body-sm">
+        {% if followup_breakdown %}
+          {% for f in followup_breakdown %}
+          <div class="absentee-row">
+            <span class="member-name">{{ f.method or 'Unspecified' }}</span>
+            <span class="badge badge-primary">{{ f.count }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="empty-state">
+          <p class="empty-state-text">No follow-ups logged yet</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

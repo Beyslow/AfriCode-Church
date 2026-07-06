@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard{% endblock %} — {{ church.name if church else 'AfriCode Church' }}</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <div class="sidebar-brand">
+      <a href="{{ url_for('dashboard.pastor_dashboard') }}" class="sidebar-brand-logo">
+        <div class="sidebar-brand-icon">
+          <!-- Cross / Church icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 2H6l6 8-6 8h12l-6-8z"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">AfriCode</span>
+          <span class="sidebar-brand-sub">Church ERP</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Church + User Context -->
+    {% if current_user.is_authenticated %}
+    <div class="sidebar-church">
+      {% if church %}
+        <div class="sidebar-church-name">{{ church.name }}</div>
+      {% endif %}
+      <div class="sidebar-church-role">{{ current_user.role | replace('_', ' ') }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+      {% set role = current_user.role %}
+
+      <!-- Core -->
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Overview</div>
+
+        {% if role in ['super_admin', 'pastor', 'secretary'] %}
+        <a href="{{ url_for('dashboard.pastor_dashboard') if role != 'super_admin' else url_for('dashboard.super_admin_dashboard') }}"
+           class="sidebar-nav-item {% if request.endpoint and 'dashboard' in request.endpoint %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Dashboard
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- People -->
+      {% if role in ['super_admin', 'pastor', 'secretary'] %}
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">People</div>
+
+        <a href="{{ url_for('members.member_list') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'members' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Members
+        </a>
+
+        <a href="{{ url_for('visitors.visitor_list') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'visitors' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+            <line x1="12" y1="11" x2="12" y2="17"/>
+            <line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+          Visitors
+        </a>
+
+        <a href="{{ url_for('ministries.ministry_list') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'ministries' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          Ministries
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Attendance -->
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Attendance</div>
+
+        <a href="{{ url_for('attendance.service_list') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'attendance' and request.endpoint != 'attendance.usher_view' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          Services
+        </a>
+
+        {% if role == 'usher' %}
+        <a href="{{ url_for('attendance.usher_view') }}"
+           class="sidebar-nav-item {% if request.endpoint == 'attendance.usher_view' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          Mark Attendance
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Finance — treasurer only -->
+      {% if role in ['super_admin', 'treasurer'] %}
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Finance</div>
+
+        <a href="{{ url_for('finance.finance_dashboard') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'finance' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          Finance
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Communications -->
+      {% if role in ['super_admin', 'pastor', 'secretary'] %}
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Comms</div>
+
+        <a href="{{ url_for('communications.compose') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'communications' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Communications
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Reports + Docs -->
+      {% if role in ['super_admin', 'pastor'] %}
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Insights</div>
+
+        <a href="{{ url_for('reports.reports_home') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'reports' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          Reports
+        </a>
+
+        <a href="{{ url_for('documents.document_list') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'documents' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          Documents
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Settings -->
+      {% if role in ['super_admin', 'pastor', 'secretary'] %}
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Admin</div>
+
+        <a href="{{ url_for('settings.settings_home') }}"
+           class="sidebar-nav-item {% if request.blueprint == 'settings' %}active{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          Settings
+        </a>
+      </div>
+      {% endif %}
+
+    </nav>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">
+          {{ current_user.username[0].upper() if current_user.is_authenticated else 'A' }}
+        </div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">{{ current_user.username if current_user.is_authenticated }}</div>
+          <div class="sidebar-user-email">{{ current_user.email or current_user.role | replace('_', ' ') }}</div>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="sidebar-logout" title="Sign out">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Sidebar overlay (mobile) ──────────────────────── -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ── Main Content ──────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <div class="topbar-breadcrumb">
+          {% block breadcrumb %}
+          <span class="current">{% block topbar_title %}Dashboard{% endblock %}</span>
+          {% endblock %}
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Date -->
+        <span style="font-size:var(--text-xs);color:var(--color-text-muted);">
+          {{ now.strftime('%A, %d %B %Y') if now else '' }}
+        </span>
+        {% block topbar_actions %}{% endblock %}
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ 'error' if category == 'danger' else category }}">
+          {% if category == 'success' %}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {% elif category in ['danger', 'error'] %}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {% endif %}
+          {{ message }}
+          <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    <main class="page-content">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<script>
+  // Mobile sidebar toggle
+  const sidebar      = document.getElementById('sidebar');
+  const overlay      = document.getElementById('sidebarOverlay');
+  const menuBtn      = document.getElementById('mobileMenuBtn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+
+  // Auto-dismiss flash messages after 5s
+  document.querySelectorAll('.flash').forEach(el => {
+    setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => el.remove(), 300);
+    }, 5000);
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

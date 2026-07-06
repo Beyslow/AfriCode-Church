@@ -1,205 +1,100 @@
-/*==================================================
-    AFRICODE CHURCH ERP
-    VARIABLES.CSS
-==================================================*/
+/* ============================================================
+   AfriCode Church ERP — Variables
+   ============================================================ */
 
 :root {
 
-/*==========================================
-    BRAND COLORS
-==========================================*/
-
---color-primary: #2563EB;
---color-primary-hover: #1D4ED8;
---color-primary-light: #DBEAFE;
-
---color-success: #16A34A;
---color-success-light: #DCFCE7;
-
---color-warning: #F59E0B;
---color-warning-light: #FEF3C7;
-
---color-danger: #DC2626;
---color-danger-light: #FEE2E2;
-
---color-info: #0891B2;
---color-info-light: #CFFAFE;
-
-
-/*==========================================
-    NEUTRALS
-==========================================*/
-
---color-white: #FFFFFF;
-
---color-background: #F8FAFC;
-
---color-surface: #FFFFFF;
-
---color-border: #E2E8F0;
-
---color-border-dark: #CBD5E1;
-
---color-text: #1E293B;
-
---color-text-light: #64748B;
-
---color-muted: #94A3B8;
-
-
-/*==========================================
-    SIDEBAR
-==========================================*/
-
---sidebar-bg: #0F172A;
-
---sidebar-hover: #1E293B;
-
---sidebar-active: var(--color-primary);
-
---sidebar-text: #CBD5E1;
-
---sidebar-width: 270px;
-
---sidebar-collapsed-width: 90px;
-
-
-/*==========================================
-    NAVBAR
-==========================================*/
-
---navbar-height: 72px;
-
---navbar-bg: #FFFFFF;
-
-
-/*==========================================
-    TYPOGRAPHY
-==========================================*/
-
---font-family:
-'Inter',
-system-ui,
--apple-system,
-BlinkMacSystemFont,
-'Segoe UI',
-sans-serif;
-
---font-xs: .75rem;
-
---font-sm: .875rem;
-
---font-md: 1rem;
-
---font-lg: 1.125rem;
-
---font-xl: 1.25rem;
-
---font-2xl: 1.5rem;
-
---font-3xl: 2rem;
-
---font-4xl: 2.5rem;
-
---font-light: 300;
-
---font-normal: 400;
-
---font-medium: 500;
-
---font-semibold: 600;
-
---font-bold: 700;
-
---line-height: 1.6;
-
-
-/*==========================================
-    SPACING
-==========================================*/
-
---space-xs: .25rem;
-
---space-sm: .5rem;
-
---space-md: 1rem;
-
---space-lg: 1.5rem;
-
---space-xl: 2rem;
-
---space-2xl: 3rem;
-
---space-3xl: 4rem;
-
-
-/*==========================================
-    BORDER RADIUS
-==========================================*/
-
---radius-sm: 6px;
-
---radius-md: 10px;
-
---radius-lg: 16px;
-
---radius-xl: 22px;
-
---radius-pill: 999px;
-
---radius-circle: 50%;
-
-
-/*==========================================
-    SHADOWS
-==========================================*/
-
---shadow-sm:
-0 1px 2px rgba(15,23,42,.06);
-
---shadow-md:
-0 4px 10px rgba(15,23,42,.08);
-
---shadow-lg:
-0 10px 25px rgba(15,23,42,.12);
-
---shadow-hover:
-0 15px 35px rgba(15,23,42,.16);
-
-
-/*==========================================
-    TRANSITIONS
-==========================================*/
-
---transition-fast:
-150ms ease;
-
---transition-normal:
-250ms ease;
-
---transition-slow:
-400ms ease;
-
-
-/*==========================================
-    CONTAINER
-==========================================*/
-
---container-width: 1400px;
-
-
-/*==========================================
-    Z INDEX
-==========================================*/
-
---z-sidebar: 100;
-
---z-navbar: 200;
-
---z-dropdown: 500;
-
---z-modal: 1000;
-
---z-toast: 1200;
+  /* ── Brand Colors ─────────────────────────────────────── */
+  --color-primary:        #FF7A2F;
+  --color-primary-dark:   #E56820;
+  --color-primary-hover:  #F06B20;
+  --color-primary-light:  #FFF3ED;
+
+  --color-accent:         #1EC8DC;
+  --color-accent-light:   #E8FAFC;
+
+  --color-gold:           #FFE055;
+  --color-gold-light:     #FFFBDD;
+
+  /* ── Sidebar ──────────────────────────────────────────── */
+  --sidebar-bg:           #1A1A2E;
+  --sidebar-text:         #A0AEC0;
+  --sidebar-text-muted:   #718096;
+  --sidebar-active-bg:    #252540;
+  --sidebar-active-text:  #FFFFFF;
+  --sidebar-hover-bg:     #1F1F38;
+  --sidebar-border:       #2A2A2A;
+  --sidebar-width:        240px;
+
+  /* ── Semantic Colors ──────────────────────────────────── */
+  --color-success:        #059669;
+  --color-success-light:  #ECFDF5;
+  --color-warning:        #D97706;
+  --color-warning-light:  #FFFBEB;
+  --color-danger:         #DC2626;
+  --color-danger-light:   #FEF2F2;
+  --color-info:           #0284C7;
+  --color-info-light:     #F0F9FF;
+
+  /* ── Neutral Palette ──────────────────────────────────── */
+  --color-surface:        #F9F9FB;
+  --color-white:          #FFFFFF;
+  --color-border:         #E5E7EB;
+  --color-border-dark:    #D1D5DB;
+  --color-text:           #1A1A1A;
+  --color-text-body:      #555555;
+  --color-text-muted:     #6B7280;
+  --color-text-subtle:    #9CA3AF;
+
+  /* ── Card ─────────────────────────────────────────────── */
+  --card-bg:              #FFFFFF;
+  --card-border:          #E5E7EB;
+  --card-radius:          12px;
+  --card-shadow:          0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --card-shadow-hover:    0 8px 24px rgba(255,122,47,0.10), 0 2px 4px rgba(0,0,0,0.06);
+
+  /* ── Typography ───────────────────────────────────────── */
+  --font-sans:   'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --text-xs:     0.75rem;
+  --text-sm:     0.875rem;
+  --text-base:   1rem;
+  --text-lg:     1.125rem;
+  --text-xl:     1.25rem;
+  --text-2xl:    1.5rem;
+  --text-3xl:    1.875rem;
+
+  --weight-normal:  400;
+  --weight-medium:  500;
+  --weight-semi:    600;
+  --weight-bold:    700;
+
+  /* ── Spacing ──────────────────────────────────────────── */
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+
+  /* ── Radius ───────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Transitions ──────────────────────────────────────── */
+  --transition:    150ms ease;
+  --transition-md: 250ms ease;
+
+  /* ── Z-index ──────────────────────────────────────────── */
+  --z-sidebar:  100;
+  --z-overlay:  200;
+  --z-modal:    300;
+  --z-toast:    400;
 
 }

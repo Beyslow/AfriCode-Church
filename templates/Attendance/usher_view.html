@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mark Attendance — AfriCode Church ERP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="usher-page">
+
+<header class="usher-header">
+  <div class="usher-header-brand">
+    <span class="usher-header-title">Mark Attendance</span>
+    <span class="usher-header-sub">{{ current_user.username }}</span>
+  </div>
+  <a href="{{ url_for('dashboard.pastor_dashboard') }}" style="color:white; display:flex; align-items:center;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+  </a>
+</header>
+
+<div class="usher-content">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else category }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Service selector -->
+  {% if recent_services %}
+  <form method="get" action="{{ url_for('attendance.usher_view') }}" style="margin-bottom:var(--space-4);">
+    <select name="service_id" class="form-control" onchange="this.form.submit()">
+      {% for s in recent_services %}
+      <option value="{{ s.id }}" {% if service and s.id == service.id %}selected{% endif %}>
+        {{ s.name }} — {{ s.service_date.strftime('%d %b %Y') }}
+      </option>
+      {% endfor %}
+    </select>
+  </form>
+  {% endif %}
+
+  {% if service %}
+  <div class="usher-service-card">
+    <div class="usher-service-info">
+      <div class="usher-service-name">{{ service.name }}</div>
+      <div class="usher-service-date">{{ service.service_date.strftime('%A, %d %B %Y') }}</div>
+      <div class="usher-count" id="presentCount">{{ marked_present|length }} of {{ members|length }} marked present</div>
+    </div>
+
+    {% if members %}
+    <ul class="usher-member-list" id="memberList">
+      {% for member in members %}
+      <li class="usher-member-item {{ 'present' if member.id in marked_present }}" data-member-id="{{ member.id }}">
+        <span class="usher-member-name">{{ member.full_name }}</span>
+        <span class="usher-member-phone">{{ member.phone or '' }}</span>
+        <div class="usher-check">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state">
+      <p class="empty-state-text">No active members found.</p>
+    </div>
+    {% endif %}
+
+    <div class="usher-add-visitor">
+      <button type="button" class="btn btn-outline btn-full" onclick="document.getElementById('visitorForm').style.display='block'; this.style.display='none';">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        Add Visitor
+      </button>
+
+      <form id="visitorForm" method="POST" action="{{ url_for('attendance.capture_visitor', service_id=service.id) }}" style="display:none; margin-top:var(--space-3);">
+        <div class="form-group">
+          <input type="text" name="full_name" class="form-control" placeholder="Visitor's full name" required>
+        </div>
+        <div class="form-group">
+          <input type="tel" name="phone" class="form-control" placeholder="Phone (optional)">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Capture & Mark Present</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No service to mark yet</div>
+    <p class="empty-state-text">Ask a pastor or secretary to create today's service first.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+{% if service %}
+const memberList = document.getElementById('memberList');
+const presentCountEl = document.getElementById('presentCount');
+const totalMembers = {{ members|length }};
+
+if (memberList) {
+  memberList.addEventListener('click', async (e) => {
+    const item = e.target.closest('.usher-member-item');
+    if (!item) return;
+
+    const memberId = item.dataset.memberId;
+    const isPresent = item.classList.contains('present');
+    const newStatus = isPresent ? 'Absent' : 'Present';
+
+    // Optimistic UI update
+    item.classList.toggle('present');
+    updateCount();
+
+    try {
+      const res = await fetch(`/attendance/service/{{ service.id }}/mark`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ member_id: parseInt(memberId), status: newStatus })
+      });
+      if (!res.ok) throw new Error('Request failed');
+    } catch (err) {
+      // Revert on failure
+      item.classList.toggle('present');
+      updateCount();
+      alert('Could not save. Check your connection and try again.');
+    }
+  });
+}
+
+function updateCount() {
+  const presentNow = memberList.querySelectorAll('.usher-member-item.present').length;
+  presentCountEl.textContent = `${presentNow} of ${totalMembers} marked present`;
+}
+{% endif %}
+</script>
+
+</body>
+</html>

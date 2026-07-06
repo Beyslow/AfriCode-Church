@@ -1,0 +1,46 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-sans);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.btn-sm  { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); border-radius: var(--radius-sm); }
+.btn-lg  { padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
+.btn-full { width: 100%; justify-content: flex-start; }
+
+.btn-primary        { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+.btn-primary:hover  { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+
+.btn-accent         { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+.btn-accent:hover   { background: #6D28D9; border-color: #6D28D9; }
+
+.btn-outline        { background: transparent; color: var(--color-primary); border-color: var(--color-primary); }
+.btn-outline:hover  { background: var(--color-primary-light); }
+
+.btn-ghost          { background: transparent; color: var(--color-text-body); border-color: var(--color-border); }
+.btn-ghost:hover    { background: var(--color-surface); }
+
+.btn-danger         { background: var(--color-danger); color: white; border-color: var(--color-danger); }
+.btn-danger:hover   { background: #B91C1C; }
+
+.btn-danger-outline { background: transparent; color: var(--color-danger); border-color: var(--color-danger); }
+.btn-danger-outline:hover { background: var(--color-danger-light); }
+
+.btn-success        { background: var(--color-success); color: white; border-color: var(--color-success); }
+.btn-success:hover  { background: #047857; }

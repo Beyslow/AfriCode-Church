@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Ministries{% endblock %}
+{% block topbar_title %}Ministries{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('ministries.add_ministry') }}" class="btn btn-primary btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+  New Ministry
+</a>
+{% endblock %}
+
+{% block content %}
+
+{% if ministry_data %}
+<div class="content-grid content-grid-3">
+  {% for row in ministry_data %}
+  <a href="{{ url_for('ministries.ministry_detail', ministry_id=row.ministry.id) }}" class="card" style="padding:var(--space-6); text-decoration:none; display:block;">
+    <div class="stat-card-icon stat-card-icon-accent" style="margin-bottom:var(--space-4);">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+    <div class="card-title" style="color:var(--color-text);">{{ row.ministry.name }}</div>
+    <p class="form-hint" style="margin-top:var(--space-2);">{{ row.member_count }} member{{ 's' if row.member_count != 1 }}</p>
+    <p class="form-hint">Leader: {{ row.leader.full_name if row.leader else 'Unassigned' }}</p>
+    {% if row.ministry.meeting_day %}
+    <p class="form-hint">Meets {{ row.ministry.meeting_day }}{% if row.ministry.meeting_time %} at {{ row.ministry.meeting_time }}{% endif %}</p>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No ministries yet</div>
+    <p class="empty-state-text">Create your first ministry to start assigning members and leaders.</p>
+    <a href="{{ url_for('ministries.add_ministry') }}" class="btn btn-primary btn-sm">New Ministry</a>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

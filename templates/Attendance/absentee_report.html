@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Absentee Report{% endblock %}
+{% block topbar_title %}Absentee Report{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+  <form method="get" action="{{ url_for('attendance.absentee_report') }}" class="filter-bar">
+    <label class="form-label" style="margin:0;">Not seen in the last</label>
+    <select name="weeks" class="form-control" onchange="this.form.submit()" style="min-width:120px;">
+      <option value="2" {% if weeks == 2 %}selected{% endif %}>2 weeks</option>
+      <option value="3" {% if weeks == 3 %}selected{% endif %}>3 weeks</option>
+      <option value="4" {% if weeks == 4 %}selected{% endif %}>4 weeks</option>
+      <option value="8" {% if weeks == 8 %}selected{% endif %}>8 weeks</option>
+    </select>
+    <span class="form-hint">Since {{ cutoff_date.strftime('%d %B %Y') }} — based on {{ recent_services|length }} service{{ 's' if recent_services|length != 1 }}</span>
+  </form>
+
+  <div class="card-header">
+    <span class="card-title">
+      <svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      Absentees
+      <span class="badge badge-warning">{{ absentees|length }}</span>
+    </span>
+    <a href="{{ url_for('members.export_csv') }}" class="btn btn-ghost btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Export All
+    </a>
+  </div>
+
+  {% if absentees %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in absentees %}
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:var(--space-3);">
+              <div class="avatar avatar-sm">{{ member.full_name[0].upper() }}</div>
+              <span class="td-name">{{ member.full_name }}</span>
+            </div>
+          </td>
+          <td class="td-muted">{{ member.phone or '—' }}</td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('members.member_profile', member_id=member.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">No absentees</div>
+    <p class="empty-state-text">Every active member has attended a service in the last {{ weeks }} week{{ 's' if weeks != 1 }}.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

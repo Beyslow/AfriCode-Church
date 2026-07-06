@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Visitors{% endblock %}
+{% block topbar_title %}Visitors{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('visitors.conversion_report') }}" class="btn btn-outline btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+  </svg>
+  Conversion Report
+</a>
+<a href="{{ url_for('visitors.add_visitor') }}" class="btn btn-primary btn-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+  Register Visitor
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+  <form method="get" action="{{ url_for('visitors.visitor_list') }}" class="filter-bar">
+    <div class="input-icon-wrap" style="flex:1; min-width:200px;">
+      <span class="icon-left">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input type="text" name="q" class="form-control" placeholder="Search by name or phone…" value="{{ search }}">
+    </div>
+
+    <select name="converted" class="form-control" onchange="this.form.submit()">
+      <option value="" {% if not converted %}selected{% endif %}>All</option>
+      <option value="no"  {% if converted == 'no' %}selected{% endif %}>Not Converted</option>
+      <option value="yes" {% if converted == 'yes' %}selected{% endif %}>Converted</option>
+    </select>
+
+    <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+    {% if search or converted %}
+    <a href="{{ url_for('visitors.visitor_list') }}" class="btn btn-ghost btn-sm">Clear</a>
+    {% endif %}
+  </form>
+
+  {% if visitors %}
+  <div class="table-wrap-flush">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Phone</th><th>Visit Date</th><th>Invited By</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for v in visitors %}
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:var(--space-3);">
+              <div class="avatar avatar-sm">{{ v.full_name[0].upper() }}</div>
+              <span class="td-name">{{ v.full_name }}</span>
+            </div>
+          </td>
+          <td class="td-muted">{{ v.phone or '—' }}</td>
+          <td class="td-muted">{{ v.visit_date.strftime('%d %b %Y') }}</td>
+          <td class="td-muted">{{ v.invited_by or '—' }}</td>
+          <td>
+            {% if v.converted %}
+              <span class="badge badge-success">Converted</span>
+            {% else %}
+              <span class="badge badge-warning">Pending</span>
+            {% endif %}
+          </td>
+          <td style="text-align:right;">
+            <a href="{{ url_for('visitors.visitor_profile', visitor_id=v.id) }}" class="td-link">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span class="pagination-info">
+      Showing {{ pagination.items|length }} of {{ pagination.total }} visitor{{ 's' if pagination.total != 1 }}
+    </span>
+    <div class="pagination-pages">
+      <a href="{{ url_for('visitors.visitor_list', page=pagination.prev_num, q=search, converted=converted) if pagination.has_prev else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_prev }}">‹</a>
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <a href="{{ url_for('visitors.visitor_list', page=p, q=search, converted=converted) }}"
+             class="page-link {{ 'active' if p == pagination.page }}">{{ p }}</a>
+        {% else %}<span class="page-link disabled">…</span>{% endif %}
+      {% endfor %}
+      <a href="{{ url_for('visitors.visitor_list', page=pagination.next_num, q=search, converted=converted) if pagination.has_next else '#' }}"
+         class="page-link {{ 'disabled' if not pagination.has_next }}">›</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <div class="empty-state-title">
+      {% if search or converted %}No visitors match your filters{% else %}No visitors yet{% endif %}
+    </div>
+    <p class="empty-state-text">
+      {% if search or converted %}Try adjusting your search or filters.{% else %}Register your first visitor to start tracking follow-up.{% endif %}
+    </p>
+    {% if not (search or converted) %}
+    <a href="{{ url_for('visitors.add_visitor') }}" class="btn btn-primary btn-sm">Register Visitor</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}
